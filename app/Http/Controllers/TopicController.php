@@ -22,7 +22,7 @@ class TopicController extends Controller
 
     public function store(Request $request)
     {
-        (new CreateNewTopic)->run($request->all());
+        return (new CreateNewTopic)->run($request->all());
     }
 
     public function show(Topic $topic)

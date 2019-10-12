@@ -10,6 +10,10 @@ class UserFollowController extends Controller
 {
     public function store(User $user, Request $request)
     {
+        $validate = $request->validate([
+            'follow_id' => ['required', 'exists:users,id']
+        ]);
+
         $user->follows()->attach($request->input('follow_id'), ['is_active' => 1]);
 
         return \redirect()->route('follows.index');
