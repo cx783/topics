@@ -122,23 +122,24 @@ class TopicManagementTest extends TestCase
         $response->assertRedirect(route('follows.index'));
 
         $this->assertCount(1, $user1->follows()->get());
-
-        return [$user1, $user2];
+        $this->assertEquals($user2->id, $user1->follows()->first()->id);
     }
 
     /**
      * @test
-     * @depends user_authenticated_can_follows_other_users
-     * 
      * ----- peding test
      * 
      */
-    public function user_can_unfollow_other_user($users)
+    public function user_can_unfollow_other_user()
     {
-        [$user1, $user2] = $users;
+        [$user1, $user2] = factory(User::class, 2)->create();
+
+        $user1->follows()->attach($user2->id, ['is_active' => 1]);
+
+        $this->assertCount(1, $user1->follows()->get());
 
         $this->actingAs($user1);
-
+       
         $response = $this->delete(route('users.follow.destroy', ['user' => $user1]), ['follow_id' => $user2->id]);
 
         $response->assertRedirect(route('follows.index'));
